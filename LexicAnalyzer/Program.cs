@@ -8,9 +8,12 @@ using static LexicAnalyzer.Enums;
 
 namespace MyApp // Note: actual namespace depends on the project name.
 {
-    bool firstCall = true;
     public class Program {
         public const int MAX_CONSTS = 1000;
+        public static t_token token;
+        public static int tokenSecundario;
+        public static char nextChar;
+        public static FileStream? file;
 
         public static List<string> SecondaryToken { get; set; } = new();
 
@@ -28,49 +31,55 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
 
         public static void Main(string[] args) {
+            file = File.OpenRead("SeuArquivo.txt");
 
-
-
+            nextChar = readChar();
+            t_token token = nextToken();
+            while (token != t_token.END) {
+                if (token == t_token.UNKNOWN) Console.WriteLine("deu ruim");
+                token = nextToken();
+            }
+            Console.WriteLine("deu bom");
         }
 
-        public static int SearchName(string name) { 
+        public static int searchName(string name) { 
             if(SecondaryToken.Contains(name)) return SecondaryToken.IndexOf(name);
             SecondaryToken.Add(name);
             return SecondaryToken.Count-1;
         }
 
         public static bool IsReservedKeyword(string keyword) =>
-            Utils.SearchKeyword(keyword) != t_token.UNKNOWN;
+            Utils.searchKeyword(keyword) != t_token.UNKNOWN;
 
-        t_token nextToken(){
+        public static t_token nextToken(){
 
-            while(isspace(nextChar)){
+            while(Char.IsWhiteSpace(nextChar)){
                 nextChar = readChar();
             }
 
-            if(isalpha(nextChar)){
+            if(Char.IsLetter(nextChar)){
                 string text = "";
 
                 do{
                     text = text + nextChar;
                     nextChar = readChar();
-                }while(isalnum(nextChar) || nextChar == '_');
+                }while(Char.IsNumber(nextChar) || nextChar == '_');
 
                 //text = text + '\0';
-                token = searchKeyWord(text);
-                if(nextToken == ID){
+                token = Utils.searchKeyword(text);
+                if(token == t_token.ID){
                     tokenSecundario = searchName(text);
                 }
             }else{
-                if(isdigit(nextChar)){
+                if(Char.IsDigit(nextChar)){
                     string numeral = "";
                     do{
                         numeral = numeral + nextChar;
                         nextChar = readChar();
-                    }while(isdigit(nextChar));
+                    }while(Char.IsDigit(nextChar));
 
-                    token = NUMERAL;
-                    tokenSecundario = addIntConst(numeral);
+                    token = t_token.NUMERAL;
+                    tokenSecundario = addIntConst(int.Parse(numeral));
                 }else{
                     if(nextChar == '"'){
                         string str = "";
@@ -79,16 +88,16 @@ namespace MyApp // Note: actual namespace depends on the project name.
                             nextChar = readChar();
                         }while(nextChar != '"');
                         nextChar = readChar();
-                        token = STRINGVAL;
-                        tokenSecundario = addStringConts(str);
+                        token = t_token.STRINGVAL;
+                        tokenSecundario = addStringConst(str);
                     }else{
-                        if(nextChar == '\0') return END;
+                        if(nextChar == '\0') return t_token.END;
                         else{
                             switch(nextChar){
 
                                 case '\'':
                                     nextChar = readChar();
-                                    token = CHARACTER;
+                                    token = t_token.CHARACTER;
                                     tokenSecundario = addCharConst(nextChar);
                                     nextChar = readChar();
                                     nextChar = readChar();
@@ -96,65 +105,65 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
                                 case ':':
                                     nextChar = readChar();
-                                    token = COLON;
+                                    token = t_token.COLON;
                                     break;
 
                                 case '+':
                                     nextChar = readChar();
                                     if(nextChar == '+'){
-                                        token = PLUS_PLUS;
+                                        token = t_token.PLUS_PLUS;
                                         nextChar = readChar();
                                     }else{
-                                        token = PLUS;
+                                        token = t_token.PLUS;
                                     }
                                     break;
 
                                 case ';':
                                     nextChar = readChar();
-                                    token = SEMI_COLON;
+                                    token = t_token.SEMI_COLON;
                                     break;
 
                                 case ',':
                                     nextChar = readChar();
-                                    token = COMMA;
+                                    token = t_token.COMMA;
                                     break;
 
                                 case '[':
                                     nextChar = readChar();
-                                    token = LEFT_SQUARE;
+                                    token = t_token.LEFT_SQUARE;
                                     break;
 
                                 case ']':
                                     nextChar = readChar();
-                                    token = RIGHT_SQUARE;
+                                    token = t_token.RIGHT_SQUARE;
                                     break;
 
                                 case '{':
                                     nextChar = readChar();
-                                    token = LEFT_BRACES;
+                                    token = t_token.LEFT_BRACES;
                                     break;
 
                                 case '}':
                                     nextChar = readChar();
-                                    token = RIGHT_BRACES;
+                                    token = t_token.RIGHT_BRACES;
                                     break;
 
                                 case '(':
                                     nextChar = readChar();
-                                    token = LEFT_PARENTHESIS;
+                                    token = t_token.LEFT_PARENTHESIS;
                                     break;
 
                                 case ')':
                                     nextChar = readChar();
-                                    token = RIGHT_PARENTHESIS;
+                                    token = t_token.RIGHT_PARENTHESIS;
                                     break;
 
                                 case '&':
                                     nextChar = readChar();
                                     if (nextChar == '&'){
-                                        token = AND;
+                                        token = t_token.AND;
                                     }else{
-                                        token = UNKNOWN;
+                                        token = t_token.UNKNOWN;
                                     }
                                     nextChar = readChar();
                                     break;
@@ -162,78 +171,79 @@ namespace MyApp // Note: actual namespace depends on the project name.
                                 case '|':
                                     nextChar = readChar();
                                     if (nextChar == '|'){
-                                            token = OR;
+                                            token = t_token.OR;
                                     }else{
-                                        token = UNKNOWN;
+                                        token = t_token.UNKNOWN;
                                     }
                                     nextChar = readChar();
                                     break;
 
                                 case '*':
                                     nextChar = readChar();
-                                    token = TIMES;
+                                    token = t_token.TIMES;
                                     break;
 
                                 case '/':
                                     nextChar = readChar();
-                                    token = DIVIDE;
+                                    token = t_token.DIVIDE;
                                     break;
 
                                 case '.':
                                     nextChar = readChar();
-                                    token = DOT;
+                                    token = t_token.DOT;
                                     break;
 
                                 case '!':
                                     nextChar = readChar();
                                     if(nextChar == '='){
-                                        token = NOT_EQUAL;
+                                        token = t_token.NOT_EQUAL;
                                         nextChar = readChar();
                                     }else{
-                                        token = NOT;
+                                        token = t_token.NOT;
                                     }
                                     break;
 
                                 case '=':
                                     nextChar = readChar();
                                     if(nextChar == '='){
-                                        token = EQUAL_EQUAL;
+                                        token = t_token.EQUAL_EQUAL;
                                         nextChar = readChar();
                                     }else{
-                                        token = EQUALS;
+                                        token = t_token.EQUALS;
                                     }
                                     break;
 
                                 case '-':
                                     nextChar = readChar();
                                     if(nextChar == '-'){
-                                        token = MINUS_MINUS;
+                                        token = t_token.MINUS_MINUS;
                                         nextChar = readChar();
                                     }else{
-                                        token = MINUS;
+                                        token = t_token.MINUS;
                                     }
                                     break;
                                 case '<':
                                     nextChar = readChar();
                                     if(nextChar == '='){
-                                        token = LESS_OR_EQUAL;
+                                        token = t_token.LESS_OR_EQUAL;
                                         nextChar = readChar();
                                     }else{
-                                        token = LESS_THAN;
+                                        token = t_token.LESS_THAN;
                                     }
                                     break;
 
                                 case '>':
                                     nextChar = readChar();
                                     if(nextChar == '='){
-                                        token = GREATER_OR_EQUAL;
+                                        token = t_token.GREATER_OR_EQUAL;
                                         nextChar = readChar();
                                     }else{
-                                        token = GREATER_THAN;
+                                        token = t_token.GREATER_THAN;
                                     }
                                     break;
                                 default:
-                                    token = UNKNOWN;
+                                    token = t_token.UNKNOWN;
+                                    break;
                             }
                         }
                     }
@@ -242,19 +252,14 @@ namespace MyApp // Note: actual namespace depends on the project name.
             return token;
         }
 
-        char readChar()
+        public static char readChar()
         {   
-            if(firstCall){
-                FileStream arquivo = File.OpenRead(@"C:\SeuArquivo.txt");
-                firstCall = false;
-            }
-            char read = (char)arquivo.ReadByte();;
-            if (read == '\n') currentLine++;
-            if (arquivo.Position < arquivo.Length) return read;
+            char read = (char)file.ReadByte();;
+            if (file.Position < file.Length) return read;
             return '\0';
         }
 
-        public static int AddCharConst(char c) {
+        public static int addCharConst(char c) {
             VConsts[nNumConsts] = new t_const {
                 Type = 0,
                 cVal = c
@@ -263,7 +268,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
             return nNumConsts - 1;
         }
 
-        public static int AddIntConst(int n) {
+        public static int addIntConst(int n) {
             VConsts[nNumConsts] = new t_const {
                 Type = 1,
                 nVal = n
@@ -272,7 +277,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
             return nNumConsts - 1;
         }
 
-        public static int AddStringConst(string s) {
+        public static int addStringConst(string s) {
             VConsts[nNumConsts] = new t_const {
                 Type = 2,
                 sVal = s
@@ -281,9 +286,9 @@ namespace MyApp // Note: actual namespace depends on the project name.
             return nNumConsts - 1;
         }
 
-        public static char GetCharConst(int n) => VConsts[n].cVal;
-        public static int GetIntConst(int n) => VConsts[n].nVal;
-        public static string GetStringConst(int n) => VConsts[n].sVal;
+        public static char getCharConst(int n) => VConsts[n].cVal;
+        public static int getIntConst(int n) => VConsts[n].nVal;
+        public static string getStringConst(int n) => VConsts[n].sVal;
 
     }
 }

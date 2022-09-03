@@ -65,7 +65,10 @@ namespace LexicAnalyzer
             ID,
 
             // token deconhecido
-            UNKNOWN
+            UNKNOWN,
+
+            //end of file
+            END
         };
     }
 }
