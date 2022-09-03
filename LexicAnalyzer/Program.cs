@@ -31,7 +31,9 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
             nextChar = readChar();
             t_token token = nextToken();
             while (token != t_token.END) {
-                if (token == t_token.UNKNOWN) Console.WriteLine("deu ruim");
+                if (token == t_token.UNKNOWN) {
+                    Console.WriteLine("deu ruim");
+                }
                 token = nextToken();
             }
             Console.WriteLine("deu bom");
@@ -58,7 +60,7 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
                 do{
                     text = text + nextChar;
                     nextChar = readChar();
-                }while(Char.IsNumber(nextChar) || nextChar == '_');
+                }while(Char.IsNumber(nextChar) || Char.IsLetter(nextChar) || nextChar == '_');
 
                 //text = text + '\0';
                 token = Utils.searchKeyword(text);

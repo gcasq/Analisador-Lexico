@@ -9,7 +9,7 @@ namespace LexicAnalyzer
                 token = (t_token)System.Enum.Parse(typeof(t_token), name, true);
             }
             catch (ArgumentException e) {
-                return t_token.UNKNOWN;
+                return t_token.ID;
             }
             return token;
         }
