@@ -1,12 +1,9 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using LexicAnalyzer.Utils;
 using static LexicAnalyzer.Enums;
 
-
-
-namespace MyApp // Note: actual namespace depends on the project name.
+namespace LexicAnalyzer // Note: actual namespace depends on the project name.
 {
     public class Program {
         public const int MAX_CONSTS = 1000;
@@ -17,13 +14,11 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
         public static List<string> SecondaryToken { get; set; } = new();
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct t_const {
-            [FieldOffset(0)] public byte Type; // 0 - char, 1 - int, 2 - string
-
-            [FieldOffset(1)] public char cVal;
-            [FieldOffset(1)] public int nVal;
-            [FieldOffset(1)] public string sVal;
+            public byte type; // 0 - char, 1 - int, 2 - string
+            public char cVal;
+            public int nVal;
+            public string sVal;
         };
 
         public static t_const[] VConsts = new t_const[MAX_CONSTS];
@@ -261,7 +256,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
         public static int addCharConst(char c) {
             VConsts[nNumConsts] = new t_const {
-                Type = 0,
+                type = 0,
                 cVal = c
             };
             nNumConsts++;
@@ -270,7 +265,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
         public static int addIntConst(int n) {
             VConsts[nNumConsts] = new t_const {
-                Type = 1,
+                type = 1,
                 nVal = n
             };
             nNumConsts++;
@@ -279,7 +274,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
         public static int addStringConst(string s) {
             VConsts[nNumConsts] = new t_const {
-                Type = 2,
+                type = 2,
                 sVal = s
             };
             nNumConsts++;

@@ -1,4 +1,4 @@
-﻿function dois(): integer {
+function dois(): integer {
 	return 2;
 }
 

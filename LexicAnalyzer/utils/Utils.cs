@@ -1,6 +1,6 @@
 ﻿using static LexicAnalyzer.Enums;
 
-namespace LexicAnalyzer.Utils
+namespace LexicAnalyzer
 {
     public class Utils {
         public static t_token searchKeyword(string name) {
