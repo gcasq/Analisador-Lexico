@@ -11,6 +11,9 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
         public static int tokenSecundario;
         public static char nextChar;
         public static FileStream? file;
+        public static bool ErrorCompilation = false;
+        public static bool EOF = false;
+        public static int errors = 0;
 
         public static List<string> SecondaryToken { get; set; } = new();
 
@@ -26,17 +29,22 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
 
 
         public static void Main(string[] args) {
-            file = File.OpenRead("SeuArquivo.txt");
+            file = File.OpenRead("./SeuArquivo.txt");
 
             nextChar = readChar();
             t_token token = nextToken();
             while (token != t_token.END) {
                 if (token == t_token.UNKNOWN) {
-                    Console.WriteLine("deu ruim");
+                    ErrorCompilation = true;
+                    errors++;
                 }
                 token = nextToken();
             }
-            Console.WriteLine("deu bom");
+
+            Console.WriteLine("Quantidade de problemas de sintaxe: " + errors);
+
+            Console.WriteLine("\nStatus final: ");
+            Console.WriteLine(ErrorCompilation ? "Erro de Sintaxe" : "Sintaxe correta");
         }
 
         public static int searchName(string name) { 
@@ -240,6 +248,7 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
                                     break;
                                 default:
                                     token = t_token.UNKNOWN;
+                                    nextChar = readChar();
                                     break;
                             }
                         }
@@ -249,10 +258,12 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
             return token;
         }
 
-        public static char readChar()
-        {   
-            char read = (char)file.ReadByte();;
-            if (file.Position < file.Length) return read;
+        public static char readChar() {
+            if (!EOF) {
+                char read = (char)file.ReadByte();
+                if (file.Position < file.Length) return read;
+                if (file.Position == file.Length) { EOF = true; return read; }
+            }
             return '\0';
         }
 
