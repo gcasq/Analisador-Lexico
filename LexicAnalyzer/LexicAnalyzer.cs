@@ -24,7 +24,6 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
         public static t_const[] VConsts = new t_const[MAX_CONSTS];
         public static int nNumConsts = 0;
 
-
         public static void ExecuteLexicAnalyzer() {
             file = File.OpenRead("./SeuArquivo.txt");
 
