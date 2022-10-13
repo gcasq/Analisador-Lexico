@@ -1,0 +1,7 @@
+LexicAnalyzer/.vs/**
+**/.vs
+LexicAnalyzer/bin/**
+**/bin
+LexicAnalyzer/obj/**
+**/obj
+*.cache
