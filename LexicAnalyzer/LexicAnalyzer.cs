@@ -1,3 +1,4 @@
+using Main;
 using static LexicAnalyzer.utils.Enums;
 
 namespace LexicAnalyzer // Note: actual namespace depends on the project name.
@@ -7,7 +8,7 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
         public static t_token token;
         public static int tokenSecundario;
         public static char nextChar;
-        public static FileStream? file;
+        //public static FileStream? file;
         public static bool ErrorCompilation = false;
         public static bool EOF = false;
         public static int errors = 0;
@@ -25,7 +26,7 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
         public static int nNumConsts = 0;
 
         public static void ExecuteLexicAnalyzer() {
-            file = File.OpenRead("./SeuArquivo.txt");
+            //file = File.OpenRead("./SeuArquivo.txt");
 
             nextChar = readChar();
             t_token token = nextToken();
@@ -53,7 +54,6 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
             Utils.searchKeyword(keyword) != t_token.UNKNOWN;
 
         public static t_token nextToken() {
-
             while (Char.IsWhiteSpace(nextChar)) {
                 nextChar = readChar();
             }
@@ -256,9 +256,9 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
 
         public static char readChar() {
             if (!EOF) {
-                char read = (char)file.ReadByte();
-                if (file.Position < file.Length) return read;
-                if (file.Position == file.Length) { EOF = true; return read; }
+                char read = (char)Program.FFile.ReadByte();
+                if (Program.FFile.Position < Program.FFile.Length) return read;
+                if (Program.FFile.Position == Program.FFile.Length) { EOF = true; return read; }
             }
             return '\0';
         }
