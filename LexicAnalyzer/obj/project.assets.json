@@ -8,19 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo\\.nuget\\packages\\": {}
+    "C:\\Users\\harll\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo\\Desktop\\Computacao_IME\\10 Periodo\\Compiladores\\Analisador Lexico\\LexicAnalyzer\\LexicAnalyzer.csproj",
+      "projectUniqueName": "C:\\Users\\harll\\Documents\\workspace\\Analisador-Lexico\\LexicAnalyzer\\LexicAnalyzer.csproj",
       "projectName": "LexicAnalyzer",
-      "projectPath": "C:\\Users\\Gustavo\\Desktop\\Computacao_IME\\10 Periodo\\Compiladores\\Analisador Lexico\\LexicAnalyzer\\LexicAnalyzer.csproj",
-      "packagesPath": "C:\\Users\\Gustavo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo\\Desktop\\Computacao_IME\\10 Periodo\\Compiladores\\Analisador Lexico\\LexicAnalyzer\\obj\\",
+      "projectPath": "C:\\Users\\harll\\Documents\\workspace\\Analisador-Lexico\\LexicAnalyzer\\LexicAnalyzer.csproj",
+      "packagesPath": "C:\\Users\\harll\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\harll\\Documents\\workspace\\Analisador-Lexico\\LexicAnalyzer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Gustavo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\harll\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -28,7 +28,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://inoanugetgallery.azurewebsites.net/api/v2": {}
       },
       "frameworks": {
         "net6.0": {
@@ -51,7 +52,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -60,7 +62,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
