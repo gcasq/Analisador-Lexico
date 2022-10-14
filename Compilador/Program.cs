@@ -1,8 +1,4 @@
-﻿using static LexicAnalyzer.LexicAnalyzer;
-using static LexicAnalyzer.SintaticAnalyzer;
-using System.IO;
-using System.Data.Common;
-using static LexicAnalyzer.utils.Enums;
+﻿using LexicAnalyzer;
 
 namespace Main {
     public class Program {
@@ -12,8 +8,10 @@ namespace Main {
         }
         static FileStream? file = File.OpenRead("./SeuArquivo.txt");
         public static void Main(string[] args) {
-            //ExecuteLexicAnalyzer();
-            synteticAnalizer();
+            SyntacticAnalyzer Syntactic = new();
+
+            //LexicAnalyzer.LexicAnalyzer.ExecuteLexicAnalyzer();
+            Syntactic.syntacticAnalizer();
         }
     }
 }

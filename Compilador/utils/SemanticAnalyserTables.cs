@@ -7,8 +7,6 @@ namespace LexicAnalyzer.utils {
             type == t_kind.STRUCT_TYPE_ ||
             type == t_kind.ALIAS_TYPE_ ||
             type == t_kind.SCALAR_TYPE_;
-
-        public static int Rule(int p) => -p;
     }
 
     public class myObj {

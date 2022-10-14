@@ -1,10 +1,10 @@
 ﻿using LexicAnalyzer.utils;
 using static LexicAnalyzer.LexicAnalyzer;
-using static LexicAnalyzer.utils.Constants;
 using static LexicAnalyzer.utils.Enums;
 using static LexicAnalyzer.utils.Enums.errorcode;
 using static LexicAnalyzer.utils.Enums.t_kind;
 using static LexicAnalyzer.utils.Enums.t_nont;
+using static LexicAnalyzer.utils.RulesConstants;
 using static LexicAnalyzer.utils.SemanticAnalyserTables;
 namespace LexicAnalyzer {
     public class SemanticAnalyzer {
@@ -16,8 +16,8 @@ namespace LexicAnalyzer {
 
         Stack<t_attrib> StackSem = new Stack<t_attrib>();
 
-        public myObj?[] SymbolTable = new myObj[MAX_NEST_LEVEL];
-        public myObj?[] SymbolTableLast = new myObj[MAX_NEST_LEVEL];
+        public myObj?[] SymbolTable = new myObj[MAX_STACK];
+        public myObj?[] SymbolTableLast = new myObj[MAX_STACK];
         int nCurrentLevel = 0;
         int nFuncs = 0;
         static int labelNo;
@@ -38,7 +38,7 @@ namespace LexicAnalyzer {
             return --nCurrentLevel;
         }
 
-        bool CheckTypes(myObj? t1, myObj? t2) {
+        public bool CheckTypes(myObj? t1, myObj? t2) {
             if (t1 == t2) {
                 return true;
             } else if (t1 == pUniversal || t2 == pUniversal) {
@@ -184,11 +184,11 @@ namespace LexicAnalyzer {
             t_attrib IDD_, IDU_, ID_, T_, LI_, LI0_, LI1_, TRU_, FALS_, STR_, CHR_, NUM_, DC_, DC0_, DC1_, LP_, LP0_, LP1_, E_, E0_, E1_, L_, L0_, L1_, R_, R0_, R1_, K_, K0_, K1_, F_, F0_, F1_, LV_, LV0_, LV1_, MC_, LE_, LE0_, LE1_, MT_, ME_, MW_, MA_;
 
             switch (ruleNumber) {
-                case DF_RULE:
+                case DF_TO_FUNC:
                     endBlock();
                     //Console.WriteLine("END_FUNC");
                     break;
-                case DT_STRUCT_RULE:
+                case DT_TO_STRUCT:
                     DC_ = StackSem.Peek();
                     StackSem.Pop();
                     IDD_ = StackSem.Peek();
@@ -199,7 +199,7 @@ namespace LexicAnalyzer {
                     p._.Struct.nSize = DC_.nSize;
                     endBlock();
                     break;
-                case DT_ARRAY_RULE:
+                case DT_TO_ARRAY:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     NUM_ = StackSem.Peek();
@@ -214,7 +214,7 @@ namespace LexicAnalyzer {
                     p._.Array.pElemType = t;
                     p._.Array.nSize = n * T_.nSize;
                     break;
-                case DT_ALIAS_RULE:
+                case DT_TO_IDD:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     IDD_ = StackSem.Peek();
@@ -225,7 +225,7 @@ namespace LexicAnalyzer {
                     p._.Alias.pBaseType = t;
                     p._.Alias.nSize = T_.nSize;
                     break;
-                case DC_DC_RULE:
+                case DC_TO_DC:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     LI_ = StackSem.Peek();
@@ -249,7 +249,7 @@ namespace LexicAnalyzer {
                     DC0_.nont = DC;
                     StackSem.Push(DC0_);
                     break;
-                case DC_LI_RULE:
+                case DC_TO_LI:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     LI_ = StackSem.Peek();
@@ -271,7 +271,7 @@ namespace LexicAnalyzer {
                     DC_.nont = DC;
                     StackSem.Push(DC_);
                     break;
-                case LI_COMMA_RULE:
+                case LI_TO_LI_COMMA:
                     IDD_ = StackSem.Peek();
                     StackSem.Pop();
                     LI1_ = StackSem.Peek();
@@ -281,7 +281,7 @@ namespace LexicAnalyzer {
                     LI0_.nont = LI;
                     StackSem.Push(LI0_);
                     break;
-                case LI_IDD_RULE:
+                case LI_TO_IDD:
                     IDD_ = StackSem.Peek();
                     LI_ = new();
                     LI_._.LI.list = IDD_._.ID.obj;
@@ -289,7 +289,7 @@ namespace LexicAnalyzer {
                     StackSem.Pop();
                     StackSem.Push(LI_);
                     break;
-                case DV_VAR_RULE:
+                case DV_TO_VAR:
                     T_ = StackSem.Peek();
                     t = T_._.T.type;
                     StackSem.Pop();
@@ -307,7 +307,7 @@ namespace LexicAnalyzer {
                     }
                     curFunction._.Function.nVars = n;
                     break;
-                case LP_LP_RULE:
+                case LP_TO_LP:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     IDD_ = StackSem.Peek();
@@ -327,7 +327,7 @@ namespace LexicAnalyzer {
                     LP0_.nont = LP;
                     StackSem.Push(LP0_);
                     break;
-                case LP_IDD_RULE:
+                case LP_TO_IDD:
                     T_ = StackSem.Peek();
                     StackSem.Pop();
                     IDD_ = StackSem.Peek();
@@ -344,22 +344,10 @@ namespace LexicAnalyzer {
                     LP_.nont = LP;
                     StackSem.Push(LP_);
                     break;
-                case LP_EPSILON_RULE:
-                    LP_ = new();
-                    LP_._.LP.list = null;
-                    LP_.nont = LP;
-                    LP_.nSize = 0;
-                    StackSem.Push(LP_);
-                    break;
-                case S_E_SEMICOLON:
-                    E_ = StackSem.Peek();
-                    StackSem.Pop();
-                    //Console.WriteLine("\tPOP");
-                    break;
-                case S_BLOCK_RULE:
+                case S_TO_NB:
                     endBlock();
                     break;
-                case S_WHILE_RULE:
+                case S_TO_WHILE:
                     MT_ = StackSem.Peek();
                     StackSem.Pop();
                     E_ = StackSem.Peek();
@@ -374,7 +362,7 @@ namespace LexicAnalyzer {
                     }
                     //Console.WriteLine( "\tJMP_BW L%d\nL%d\n", l1, l2);
                     break;
-                case S_DO_WHILE_RULE:
+                case S_TO_DO_WHILE:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     MW_ = StackSem.Peek();
@@ -386,7 +374,7 @@ namespace LexicAnalyzer {
                     }
                     //Console.WriteLine("\tNOT\n\tTJMP_BW L%d\n", l);
                     break;
-                case S_IF_RULE:
+                case S_TO_IF:
                     StackSem.Pop();
                     MT_ = StackSem.Peek();
                     StackSem.Pop();
@@ -398,7 +386,7 @@ namespace LexicAnalyzer {
                     }
                     // Console.WriteLine("L%d\n", MT_._.MT.label);
                     break;
-                case S_IF_ELSE_RULE:
+                case S_TO_IF_ELSE:
                     ME_ = StackSem.Peek();
                     StackSem.Pop();
                     MT_ = StackSem.Peek();
@@ -412,12 +400,12 @@ namespace LexicAnalyzer {
                     }
                     //fprintf(out, "\tL%d\n", l);
                     break;
-                case S_BREAK_RULE:
+                case S_TO_BREAK:
                     MT_ = StackSem.Peek();
                     break;
-                case S_CONTINUE_RULE:
+                case S_TO_CONTINUE:
                     break;
-                case S_RETURN_RULE:
+                case S_TO_LV:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     if (!CheckTypes(curFunction._.Function.pRetType, E_._.E.type)) {
@@ -425,7 +413,7 @@ namespace LexicAnalyzer {
                     }
                     // fprintf(out, "\tRET\n");
                     break;
-                case E_AND_RULE:
+                case E_TO_AND:
                     L_ = StackSem.Peek();
                     StackSem.Pop();
                     E1_ = StackSem.Peek();
@@ -442,7 +430,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(E0_);
                     //fprintf(out, "\tAND\n");
                     break;
-                case E_OR_RULE:
+                case E_TO_OR:
                     L_ = StackSem.Peek();
                     StackSem.Pop();
                     E1_ = StackSem.Peek();
@@ -459,7 +447,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(E0_);
                     //fprintf(out, "\tOR\n");
                     break;
-                case E_L_RULE:
+                case E_TO_L:
                     L_ = StackSem.Peek();
                     StackSem.Pop();
                     E_ = new();
@@ -467,21 +455,7 @@ namespace LexicAnalyzer {
                     E_.nont = E;
                     StackSem.Push(E_);
                     break;
-                case E_LV_EQUAL_RULE:
-                    E1_ = StackSem.Peek();
-                    StackSem.Pop();
-                    LV_ = StackSem.Peek();
-                    StackSem.Pop();
-                    if (!CheckTypes(LV_._.LV.type, E1_._.E.type)) {
-                        Error(ERR_TYPE_MISMATCH, currentLine);
-                    }
-                    E0_ = new();
-                    E0_._.F.type = E1_._.E.type;
-                    StackSem.Push(E0_);
-                    //fprintf(out, "\tSTORE_REF %d", t._.Type.nSize);
-                    //fprintf(out, "\tDE_REF %d", t._.Type.nSize);
-                    break;
-                case L_LESS_THAN_RULE:
+                case L_TO_LESS_THAN:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -495,7 +469,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tLT\n");
                     break;
-                case L_GREATER_THAN_RULE:
+                case L_TO_GREATER_THAN:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -509,7 +483,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tGT\n");
                     break;
-                case L_LESS_EQUAL_RULE:
+                case L_TO_LESS_EQUAL:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -523,7 +497,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tLE\n");
                     break;
-                case L_GREATER_EQUAL_RULE:
+                case L_TO_GREATER_EQUAL:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -537,7 +511,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tGE\n");
                     break;
-                case L_EQUAL_EQUAL_RULE:
+                case L_TO_EQUAL:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -551,7 +525,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tEQ\n");
                     break;
-                case L_NOT_EQUAL_RULE:
+                case L_TO_DIFF:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L1_ = StackSem.Peek();
@@ -565,7 +539,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(L0_);
                     //fprintf(out, "\tNE\n");
                     break;
-                case L_R_RULE:
+                case L_TO_R:
                     R_ = StackSem.Peek();
                     StackSem.Pop();
                     L_ = new();
@@ -573,7 +547,7 @@ namespace LexicAnalyzer {
                     L_.nont = L;
                     StackSem.Push(L_);
                     break;
-                case R_PLUS_RULE:
+                case R_TO_PLUS:
                     K_ = StackSem.Peek();
                     StackSem.Pop();
                     R1_ = StackSem.Peek();
@@ -590,7 +564,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(R0_);
                     //fprintf(out, "\tADD\n");
                     break;
-                case R_MINUS_RULE:
+                case R_TO_MINUS:
                     K_ = StackSem.Peek();
                     StackSem.Pop();
                     R1_ = StackSem.Peek();
@@ -607,7 +581,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(R0_);
                     //fprintf(out, "\tSUB\n");
                     break;
-                case R_K_RULE:
+                case R_TO_Y:
                     K_ = StackSem.Peek();
                     StackSem.Pop();
                     R_ = new();
@@ -615,7 +589,7 @@ namespace LexicAnalyzer {
                     R_.nont = R;
                     StackSem.Push(R_);
                     break;
-                case K_TIMES_RULE:
+                case Y_TO_TIMES:
                     F_ = StackSem.Peek();
                     StackSem.Pop();
                     K1_ = StackSem.Peek();
@@ -632,7 +606,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(K0_);
                     //fprintf(out, "\tMUL\n");
                     break;
-                case K_DIVIDE_RULE:
+                case Y_TO_DIVIDE:
                     F_ = StackSem.Peek();
                     StackSem.Pop();
                     K1_ = StackSem.Peek();
@@ -649,7 +623,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(K0_);
                     //fprintf(out, "\tDIV\n");
                     break;
-                case K_F_RULE:
+                case Y_TO_F:
                     F_ = StackSem.Peek();
                     StackSem.Pop();
                     K_ = new();
@@ -657,7 +631,7 @@ namespace LexicAnalyzer {
                     K_.nont = K;
                     StackSem.Push(K_);
                     break;
-                case F_LV_RULE:
+                case F_TO_LV:
                     LV_ = StackSem.Peek();
                     StackSem.Pop();
                     n = LV_._.LV.type._.Type.nSize;
@@ -667,7 +641,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F_);
                     //fprintf(out, "\tDE_REF %d\n", n);
                     break;
-                case F_LEFT_PLUS_PLUS_RULE:
+                case F_TO_PLUS_LV:
                     LV_ = StackSem.Peek();
                     StackSem.Pop();
                     t = LV_._.LV.type;
@@ -681,7 +655,7 @@ namespace LexicAnalyzer {
                     //fprintf(out, "\tINC\n\tSTORE_REF 1\n\tDE_REF 1\n");
                     StackSem.Push(F_);
                     break;
-                case F_LEFT_MINUS_MINUS_RULE:
+                case F_TO_MINUS_LV:
                     LV_ = StackSem.Peek();
                     StackSem.Pop();
                     t = LV_._.LV.type;
@@ -695,7 +669,7 @@ namespace LexicAnalyzer {
                     //fprintf(out, "\tDUP\n\tDUP\n\tDE_REF 1\n");
                     //fprintf(out, "\tDEC\n\tSTORE_REF 1\n\tDE_REF 1\n");
                     break;
-                case F_RIGHT_PLUS_PLUS_RULE:
+                case F_TO_LV_PLUS:
                     LV_ = StackSem.Peek();
                     StackSem.Pop();
                     t = LV_._.LV.type;
@@ -710,7 +684,7 @@ namespace LexicAnalyzer {
                     //fprintf(out, "\tINC\n\tSTORE_REF 1\n\tDE_REF 1\n");
                     //fprintf(out, "\tDEC\n");
                     break;
-                case F_RIGHT_MINUS_MINUS_RULE:
+                case F_TO_LV_MINUS:
                     LV_ = StackSem.Peek();
                     StackSem.Pop();
                     t = LV_._.LV.type;
@@ -725,7 +699,7 @@ namespace LexicAnalyzer {
                     //fprintf(out, "\tDEC\n\tSTORE_REF 1\n\tDE_REF 1\n");
                     //fprintf(out, "\tINC\n");
                     break;
-                case F_PARENTHESIS_E_RULE:
+                case F_TO_E:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -733,7 +707,7 @@ namespace LexicAnalyzer {
                     F_.nont = F;
                     StackSem.Push(F_);
                     break;
-                case F_IDU_MC_RULE:
+                case F_TO_IDU:
                     LE_ = StackSem.Peek();
                     StackSem.Pop();
                     MC_ = StackSem.Peek();
@@ -754,7 +728,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F_);
                     //fprintf(out, "\tCALL %d\n", f._.Function.nIndex);
                     break;
-                case F_MINUS_F_RULE:
+                case F_TO_MINUS_F:
                     F1_ = StackSem.Peek();
                     StackSem.Pop();
                     t = F1_._.F.type;
@@ -767,7 +741,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F0_);
                     //fprintf(out, "\tNEG\n");
                     break;
-                case F_NOT_F_RULE:
+                case F_TO_DIF_F:
                     F1_ = StackSem.Peek();
                     StackSem.Pop();
                     t = F1_._.F.type;
@@ -780,7 +754,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F0_);
                     //fprintf(out, "\tNOT\n");
                     break;
-                case F_TRUE_RULE:
+                case F_TO_TRUE:
                     TRU_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -789,7 +763,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F_);
                     //fprintf(out, "\tLOAD_TRUE\n");
                     break;
-                case F_FALSE_RULE:
+                case F_TO_FALSE:
                     FALS_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -798,7 +772,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(F_);
                     //fprintf(out, "\tLOAD_FALSE\n");
                     break;
-                case F_CHR_RULE:
+                case F_TO_CHR:
                     CHR_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -808,7 +782,7 @@ namespace LexicAnalyzer {
                     n = tokenSecundario;
                     //fprintf(out, "\tLOAD_CONST %d\n", n);
                     break;
-                case F_STR_RULE:
+                case F_TO_STR:
                     STR_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -818,7 +792,7 @@ namespace LexicAnalyzer {
                     n = tokenSecundario;
                     //fprintf(out, "\tLOAD_CONST %d\n", n);
                     break;
-                case F_NUM_RULE:
+                case F_TO_NUM:
                     STR_ = StackSem.Peek();
                     StackSem.Pop();
                     F_ = new();
@@ -828,7 +802,7 @@ namespace LexicAnalyzer {
                     n = tokenSecundario;
                     //fprintf(out, "\tLOAD_CONST %d\n", n);
                     break;
-                case LE_LE_RULE:
+                case LE_TO_LE:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     LE1_ = StackSem.Peek();
@@ -854,7 +828,7 @@ namespace LexicAnalyzer {
                     LE0_.nont = LE;
                     StackSem.Push(LE0_);
                     break;
-                case LE_E_RULE:
+                case LE_TO_E:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     MC_ = StackSem.Peek();
@@ -878,21 +852,7 @@ namespace LexicAnalyzer {
                     LE_.nont = LE;
                     StackSem.Push(LE_);
                     break;
-                case LE_EPSILON_RULE:
-                    MC_ = StackSem.Peek();
-                    LE_ = new();
-                    if (MC_._.MC.param != null) {
-                        LE_._.LE.err = true;
-                    } else {
-                        LE_._.LE.err = false;
-                    }
-                    LE_._.LE.n = 0;
-                    LE_._.LE.param = MC_._.MC.param;
-                    LE_._.LE.type = pUniversal;
-                    LE_.nont = LE;
-                    StackSem.Push(LE_);
-                    break;
-                case LV_DOT_RULE:
+                case LV_TO_LV_IDU:
                     ID_ = StackSem.Peek();
                     StackSem.Pop();
                     LV1_ = StackSem.Peek();
@@ -924,7 +884,7 @@ namespace LexicAnalyzer {
                     StackSem.Push(LV0_);
                     //fprintf(out, "\tADD %d\n", p._.Field.nIndex);
                     break;
-                case LV_SQUARE_RULE:
+                case LV_TO_LV_E:
                     E_ = StackSem.Peek();
                     StackSem.Pop();
                     LV1_ = StackSem.Peek();
@@ -949,7 +909,7 @@ namespace LexicAnalyzer {
                     LV0_.nont = LV;
                     StackSem.Push(LV0_);
                     break;
-                case LV_IDU_RULE:
+                case LV_TO_IDU:
                     IDU_ = StackSem.Peek();
                     StackSem.Pop();
                     LV_ = new();
@@ -967,35 +927,35 @@ namespace LexicAnalyzer {
                     StackSem.Push(LV_);
                     //fprintf(out, "\tLOAD_REF %d\n", p._.Var.nIndex);
                     break;
-                case T_INTEGER_RULE:
+                case T_TO_INTEGER:
                     T_ = new();
                     T_._.T.type = pInt;
                     T_.nont = T;
                     T_.nSize = 1;
                     StackSem.Push(T_);
                     break;
-                case T_CHAR_RULE:
+                case T_TO_CHR:
                     T_ = new();
                     T_._.T.type = pChar;
                     T_.nont = T;
                     T_.nSize = 1;
                     StackSem.Push(T_);
                     break;
-                case T_BOOL_RULE:
+                case T_TO_BOOL:
                     T_ = new();
                     T_._.T.type = pBool;
                     T_.nont = T;
                     T_.nSize = 1;
                     StackSem.Push(T_);
                     break;
-                case T_STRING_RULE:
+                case T_TO_STR:
                     T_ = new();
                     T_._.T.type = pString;
                     T_.nont = T;
                     T_.nSize = 1;
                     StackSem.Push(T_);
                     break;
-                case T_IDU_RULE:
+                case T_TO_IDU:
                     IDU_ = StackSem.Peek();
                     p = IDU_._.ID.obj;
                     StackSem.Pop();
@@ -1136,33 +1096,7 @@ namespace LexicAnalyzer {
                     f._.Function.nIndex = nFuncs++;
                     newBlock();
                     break;
-                case MT_RULE:
-                    l = newLabel();
-                    MT_ = new();
-                    MT_._.MT.label = l;
-                    MT_.nont = MT;
-                    //fprintf(out, "\tTJMP_FW L%d\n", l);
-                    StackSem.Push(MT_);
-                    break;
-                case ME_RULE:
-                    MT_ = StackSem.Peek();
-                    l1 = MT_._.MT.label;
-                    l2 = newLabel();
-                    ME_ = new();
-                    ME_._.ME.label = l2;
-                    ME_.nont = ME;
-                    StackSem.Push(ME_);
-                    //fprintf(out, "\tTJMP_FW L%d\nL%d\n", l2, l1);
-                    break;
-                case MW_RULE:
-                    l = newLabel();
-                    MW_ = new();
-                    MW_._.MW.label = l;
-                    StackSem.Push(MW_);
-                    //fprintf(out, "\tL%d\n", l);
-                    break;
-                case MA_RULE:
-                    //fprintf(out, "\tDUP\n");
+                default:
                     break;
             }
         }
