@@ -293,6 +293,5 @@ namespace LexicAnalyzer // Note: actual namespace depends on the project name.
         public static char getCharConst(int n) => VConsts[n].cVal;
         public static int getIntConst(int n) => VConsts[n].nVal;
         public static string getStringConst(int n) => VConsts[n].sVal;
-
     }
 }
