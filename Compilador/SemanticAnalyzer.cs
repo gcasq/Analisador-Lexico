@@ -186,7 +186,7 @@ namespace LexicAnalyzer {
             switch (ruleNumber) {
                 case DF_TO_FUNC:
                     endBlock();
-                    //Console.WriteLine("END_FUNC");
+                    Console.WriteLine("END_FUNC");
                     break;
                 case DT_TO_STRUCT:
                     DC_ = StackSem.Peek();
@@ -360,7 +360,7 @@ namespace LexicAnalyzer {
                     if (!CheckTypes(t, pBool)) {
                         Error(ERR_BOOL_TYPE_EXPECTED, currentLine);
                     }
-                    //Console.WriteLine( "\tJMP_BW L%d\nL%d\n", l1, l2);
+                    Console.WriteLine($"JMP_BW L {l1}\nL {l2}\n");
                     break;
                 case S_TO_DO_WHILE:
                     E_ = StackSem.Peek();
@@ -372,7 +372,7 @@ namespace LexicAnalyzer {
                     if (!CheckTypes(t, pBool)) {
                         Error(ERR_BOOL_TYPE_EXPECTED, currentLine);
                     }
-                    //Console.WriteLine("\tNOT\n\tTJMP_BW L%d\n", l);
+                    Console.WriteLine($"NOT\nTJMP_BW L {l}\n");
                     break;
                 case S_TO_IF:
                     StackSem.Pop();
@@ -384,7 +384,7 @@ namespace LexicAnalyzer {
                     if (!CheckTypes(t, pBool)) {
                         Error(ERR_BOOL_TYPE_EXPECTED, currentLine);
                     }
-                    // Console.WriteLine("L%d\n", MT_._.MT.label);
+                    Console.WriteLine($"L {MT_._.MT.label}\n");
                     break;
                 case S_TO_IF_ELSE:
                     ME_ = StackSem.Peek();
@@ -398,7 +398,7 @@ namespace LexicAnalyzer {
                     if (!CheckTypes(t, pBool)) {
                         Error(ERR_BOOL_TYPE_EXPECTED, currentLine);
                     }
-                    //fprintf(out, "\tL%d\n", l);
+                    Console.WriteLine($"L {l}\n");
                     break;
                 case S_TO_BREAK:
                     MT_ = StackSem.Peek();
@@ -411,7 +411,7 @@ namespace LexicAnalyzer {
                     if (!CheckTypes(curFunction._.Function.pRetType, E_._.E.type)) {
                         Error(ERR_RETURN_TYPE_MISMATCH, currentLine);
                     }
-                    // fprintf(out, "\tRET\n");
+                    Console.WriteLine($"RET\n");
                     break;
                 case E_TO_AND:
                     L_ = StackSem.Peek();
@@ -428,7 +428,7 @@ namespace LexicAnalyzer {
                     E0_._.E.type = pBool;
                     E0_.nont = E;
                     StackSem.Push(E0_);
-                    //fprintf(out, "\tAND\n");
+                    Console.WriteLine($"AND\n");
                     break;
                 case E_TO_OR:
                     L_ = StackSem.Peek();
@@ -445,7 +445,7 @@ namespace LexicAnalyzer {
                     E0_._.E.type = pBool;
                     E0_.nont = E;
                     StackSem.Push(E0_);
-                    //fprintf(out, "\tOR\n");
+                    Console.WriteLine($"OR\n");
                     break;
                 case E_TO_L:
                     L_ = StackSem.Peek();
@@ -467,7 +467,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tLT\n");
+                    Console.WriteLine($"LT\n");
                     break;
                 case L_TO_GREATER_THAN:
                     R_ = StackSem.Peek();
@@ -481,7 +481,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tGT\n");
+                    Console.WriteLine($"GT\n");
                     break;
                 case L_TO_LESS_EQUAL:
                     R_ = StackSem.Peek();
@@ -495,7 +495,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tLE\n");
+                    Console.WriteLine($"LE\n");
                     break;
                 case L_TO_GREATER_EQUAL:
                     R_ = StackSem.Peek();
@@ -509,7 +509,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tGE\n");
+                    Console.WriteLine($"GE\n");
                     break;
                 case L_TO_EQUAL:
                     R_ = StackSem.Peek();
@@ -523,7 +523,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tEQ\n");
+                    Console.WriteLine($"EQ\n");
                     break;
                 case L_TO_DIFF:
                     R_ = StackSem.Peek();
@@ -537,7 +537,7 @@ namespace LexicAnalyzer {
                     L0_._.L.type = pBool;
                     L0_.nont = L;
                     StackSem.Push(L0_);
-                    //fprintf(out, "\tNE\n");
+                    Console.WriteLine($"NE\n");
                     break;
                 case L_TO_R:
                     R_ = StackSem.Peek();
@@ -562,7 +562,7 @@ namespace LexicAnalyzer {
                     R0_._.R.type = R1_._.R.type;
                     R0_.nont = R;
                     StackSem.Push(R0_);
-                    //fprintf(out, "\tADD\n");
+                    Console.WriteLine($"ADD\n");
                     break;
                 case R_TO_MINUS:
                     K_ = StackSem.Peek();
@@ -579,7 +579,7 @@ namespace LexicAnalyzer {
                     R0_._.R.type = R1_._.R.type;
                     R0_.nont = R;
                     StackSem.Push(R0_);
-                    //fprintf(out, "\tSUB\n");
+                    Console.WriteLine($"SUB\n");
                     break;
                 case R_TO_Y:
                     K_ = StackSem.Peek();
@@ -604,7 +604,7 @@ namespace LexicAnalyzer {
                     K0_._.K.type = K1_._.K.type;
                     K0_.nont = K;
                     StackSem.Push(K0_);
-                    //fprintf(out, "\tMUL\n");
+                    Console.WriteLine($"MUL\n");
                     break;
                 case Y_TO_DIVIDE:
                     F_ = StackSem.Peek();
@@ -621,7 +621,7 @@ namespace LexicAnalyzer {
                     K0_._.K.type = K1_._.K.type;
                     K0_.nont = K;
                     StackSem.Push(K0_);
-                    //fprintf(out, "\tDIV\n");
+                    Console.WriteLine($"DIV\n");
                     break;
                 case Y_TO_F:
                     F_ = StackSem.Peek();
@@ -639,7 +639,7 @@ namespace LexicAnalyzer {
                     F_._.F.type = LV_._.LV.type;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tDE_REF %d\n", n);
+                    Console.WriteLine($"DE_REF {n}\n");
                     break;
                 case F_TO_PLUS_LV:
                     LV_ = StackSem.Peek();
@@ -651,8 +651,8 @@ namespace LexicAnalyzer {
                     F_ = new();
                     F_._.F.type = pInt;
                     F_.nont = F;
-                    //fprintf(out, "\tDUP\n\tDUP\n\tDE_REF 1\n");
-                    //fprintf(out, "\tINC\n\tSTORE_REF 1\n\tDE_REF 1\n");
+                    Console.WriteLine($"DUP\nDUP\nDE_REF 1\n");
+                    Console.WriteLine($"INC\nSTORE_REF 1\nDE_REF 1\n");
                     StackSem.Push(F_);
                     break;
                 case F_TO_MINUS_LV:
@@ -666,8 +666,8 @@ namespace LexicAnalyzer {
                     F_._.F.type = LV_._.LV.type;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tDUP\n\tDUP\n\tDE_REF 1\n");
-                    //fprintf(out, "\tDEC\n\tSTORE_REF 1\n\tDE_REF 1\n");
+                    Console.WriteLine($"DUP\nDUP\nDE_REF 1\n");
+                    Console.WriteLine($"DEC\nSTORE_REF 1\nDE_REF 1\n");
                     break;
                 case F_TO_LV_PLUS:
                     LV_ = StackSem.Peek();
@@ -680,9 +680,9 @@ namespace LexicAnalyzer {
                     F_._.F.type = LV_._.LV.type;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tDUP\n\tDUP\n\tDE_REF 1\n");
-                    //fprintf(out, "\tINC\n\tSTORE_REF 1\n\tDE_REF 1\n");
-                    //fprintf(out, "\tDEC\n");
+                    Console.WriteLine($"DUP\nDUP\nDE_REF 1\n");
+                    Console.WriteLine($"INC\nSTORE_REF 1\nDE_REF 1\n");
+                    Console.WriteLine($"DEC\n");
                     break;
                 case F_TO_LV_MINUS:
                     LV_ = StackSem.Peek();
@@ -695,9 +695,9 @@ namespace LexicAnalyzer {
                     F_._.F.type = t;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tDUP\n\tDUP\n\tDE_REF 1\n");
-                    //fprintf(out, "\tDEC\n\tSTORE_REF 1\n\tDE_REF 1\n");
-                    //fprintf(out, "\tINC\n");
+                    Console.WriteLine($"DUP\nDUP\nDE_REF 1\n");
+                    Console.WriteLine($"DEC\nSTORE_REF 1\nDE_REF 1\n");
+                    Console.WriteLine($"INC\n");
                     break;
                 case F_TO_E:
                     E_ = StackSem.Peek();
@@ -726,7 +726,7 @@ namespace LexicAnalyzer {
                     }
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tCALL %d\n", f._.Function.nIndex);
+                    Console.WriteLine($"CALL {f._.Function.nIndex}\n");
                     break;
                 case F_TO_MINUS_F:
                     F1_ = StackSem.Peek();
@@ -739,7 +739,7 @@ namespace LexicAnalyzer {
                     F0_._.F.type = t;
                     F0_.nont = F;
                     StackSem.Push(F0_);
-                    //fprintf(out, "\tNEG\n");
+                    Console.WriteLine($"NEG\n");
                     break;
                 case F_TO_DIF_F:
                     F1_ = StackSem.Peek();
@@ -752,7 +752,7 @@ namespace LexicAnalyzer {
                     F0_._.F.type = t;
                     F0_.nont = F;
                     StackSem.Push(F0_);
-                    //fprintf(out, "\tNOT\n");
+                    Console.WriteLine($"NOT\n");
                     break;
                 case F_TO_TRUE:
                     TRU_ = StackSem.Peek();
@@ -761,7 +761,7 @@ namespace LexicAnalyzer {
                     F_._.F.type = pBool;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tLOAD_TRUE\n");
+                    Console.WriteLine($"LOAD_TRUE\n");
                     break;
                 case F_TO_FALSE:
                     FALS_ = StackSem.Peek();
@@ -770,7 +770,7 @@ namespace LexicAnalyzer {
                     F_._.F.type = pBool;
                     F_.nont = F;
                     StackSem.Push(F_);
-                    //fprintf(out, "\tLOAD_FALSE\n");
+                    Console.WriteLine($"LOAD_FALSE\n");
                     break;
                 case F_TO_CHR:
                     CHR_ = StackSem.Peek();
@@ -780,7 +780,7 @@ namespace LexicAnalyzer {
                     F_.nont = F;
                     StackSem.Push(F_);
                     n = tokenSecundario;
-                    //fprintf(out, "\tLOAD_CONST %d\n", n);
+                    Console.WriteLine($"LOAD_CONST {n}\n");
                     break;
                 case F_TO_STR:
                     STR_ = StackSem.Peek();
@@ -790,7 +790,7 @@ namespace LexicAnalyzer {
                     F_.nont = F;
                     StackSem.Push(F_);
                     n = tokenSecundario;
-                    //fprintf(out, "\tLOAD_CONST %d\n", n);
+                    Console.WriteLine($"LOAD_CONST {n}\n");
                     break;
                 case F_TO_NUM:
                     STR_ = StackSem.Peek();
@@ -800,7 +800,7 @@ namespace LexicAnalyzer {
                     F_.nont = F;
                     StackSem.Push(F_);
                     n = tokenSecundario;
-                    //fprintf(out, "\tLOAD_CONST %d\n", n);
+                    Console.WriteLine($"LOAD_CONST {n}\n");
                     break;
                 case LE_TO_LE:
                     E_ = StackSem.Peek();
@@ -882,7 +882,7 @@ namespace LexicAnalyzer {
                     }
                     LV0_.nont = LV;
                     StackSem.Push(LV0_);
-                    //fprintf(out, "\tADD %d\n", p._.Field.nIndex);
+                    Console.WriteLine($"ADD {p._.Field.nIndex}\n");
                     break;
                 case LV_TO_LV_E:
                     E_ = StackSem.Peek();
@@ -901,7 +901,7 @@ namespace LexicAnalyzer {
                     } else {
                         LV0_._.LV.type = t._.Array.pElemType;
                         n = t._.Array.nSize / t._.Array.nNumElems;
-                        //fprintf(out, "\tMUL %d\n\tADD\n", n);
+                        Console.WriteLine($"MUL {n}\nADD\n");
                     }
                     if (!CheckTypes(E_._.E.type, pInt)) {
                         Error(ERR_INVALID_INDEX_TYPE, currentLine);
@@ -925,7 +925,7 @@ namespace LexicAnalyzer {
                     }
                     LV_.nont = LV;
                     StackSem.Push(LV_);
-                    //fprintf(out, "\tLOAD_REF %d\n", p._.Var.nIndex);
+                    Console.WriteLine($"LOAD_REF {p._.Var.nIndex}");
                     break;
                 case T_TO_INTEGER:
                     T_ = new();
@@ -1068,7 +1068,7 @@ namespace LexicAnalyzer {
                     f._.Function.nParams = LP_.nSize;
                     f._.Function.nVars = LP_.nSize;
                     curFunction = f;
-                    //fprintf(out, "BEGIN_FUNC %d %d %d\n", f._.Function.nIndex, f._.Function.nParams, f._.Function.nVars - f._.Function.nParams);
+                    Console.WriteLine($"BEGIN_FUNC {f._.Function.nIndex} {f._.Function.nParams} {f._.Function.nParams}");
                     break;
                 case MC_RULE:
                     IDU_ = StackSem.Peek();
